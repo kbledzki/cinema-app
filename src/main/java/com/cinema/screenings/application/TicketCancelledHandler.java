@@ -1,43 +1,31 @@
-package com.cinema.screenings.application.services;
+package com.cinema.screenings.application;
 
 import com.cinema.screenings.domain.ScreeningRepository;
-import com.cinema.screenings.domain.Seat;
 import com.cinema.screenings.domain.exceptions.ScreeningNotFoundException;
 import com.cinema.screenings.domain.exceptions.SeatNotFoundException;
-import com.cinema.tickets.domain.events.TicketBookedEvent;
 import com.cinema.tickets.domain.events.TicketCancelledEvent;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
-@Service
+@Component
 @RequiredArgsConstructor
-class TicketEventHandlerService {
+@Slf4j
+public class TicketCancelledHandler {
 
     private final ScreeningRepository screeningRepository;
 
     @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
-    public void handle(TicketBookedEvent event) {
-        readSeat(
-                event.screeningId(),
-                event.seatId()
-        ).take();
-    }
-
-    @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     public void handle(TicketCancelledEvent event) {
-        readSeat(
-                event.screeningId(),
-                event.seatId()
-        ).free();
-    }
-
-    private Seat readSeat(Long screeningId, Long seatId) {
-        return screeningRepository
-                .readById(screeningId)
+        log.info("Handled event:{}", event);
+        var seat = screeningRepository
+                .readById(event.screeningId())
                 .orElseThrow(ScreeningNotFoundException::new)
-                .findSeat(seatId)
+                .findSeat(event.seatId())
                 .orElseThrow(SeatNotFoundException::new);
+        seat.free();
+        log.info("Freed seat:{}", seat);
     }
 }

@@ -1,6 +1,13 @@
 package com.cinema.screenings.domain;
 
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -20,7 +27,7 @@ public class Screening {
 
     private LocalDateTime date;
 
-    private String filmTitle;
+    private Long filmId;
 
     private String roomId;
 
@@ -32,12 +39,12 @@ public class Screening {
 
     public Screening(
             LocalDateTime date,
-            String filmTitle,
+            Long filmId,
             String roomId,
             List<Seat> seats
     ) {
         this.date = date;
-        this.filmTitle = filmTitle;
+        this.filmId = filmId;
         this.roomId = roomId;
         this.seats = seats;
     }

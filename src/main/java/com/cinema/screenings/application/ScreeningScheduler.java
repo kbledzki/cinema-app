@@ -1,6 +1,7 @@
-package com.cinema.screenings.application.services;
+package com.cinema.screenings.application;
 
-import com.cinema.films.application.services.FilmService;
+import com.cinema.films.application.queries.handlers.ReadFilmHandler;
+import com.cinema.films.application.queries.ReadFilm;
 import com.cinema.screenings.domain.Screening;
 import com.cinema.screenings.domain.ScreeningRepository;
 import com.cinema.screenings.domain.events.ScreeningEndedEvent;
@@ -20,10 +21,10 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 @Profile("prod")
-class ScreeningSchedulerService {
+class ScreeningScheduler {
 
     private final ScreeningRepository screeningRepository;
-    private final FilmService filmService;
+    private final ReadFilmHandler readFilmHandler;
     private final Clock clock;
     private final EventPublisher eventPublisher;
 
@@ -60,14 +61,15 @@ class ScreeningSchedulerService {
                 .readWithRoom()
                 .stream()
                 .filter(screening -> {
-                    var endDate = calculateScreeningEndDate(screening.getDate(), screening.getFilmTitle());
+                    var endDate = calculateScreeningEndDate(screening.getDate(), screening.getFilmId());
                     return endDate.isBefore(LocalDateTime.now(clock));
                 })
                 .toList();
     }
 
-    private LocalDateTime calculateScreeningEndDate(LocalDateTime screeningDate, String filmTitle) {
-        var filmDurationInMinutes = filmService.readFilmDurationInMinutes(filmTitle);
-        return screeningDate.plusMinutes(filmDurationInMinutes);
+    private LocalDateTime calculateScreeningEndDate(LocalDateTime screeningDate, Long filmId) {
+        var query = new ReadFilm(filmId);
+        var filmDto = readFilmHandler.handle(query);
+        return screeningDate.plusMinutes(filmDto.durationInMinutes());
     }
 }

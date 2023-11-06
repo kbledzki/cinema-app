@@ -1,4 +1,4 @@
-package com.cinema.screenings.application.dto;
+package com.cinema.screenings.application.queries.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -8,6 +8,7 @@ public record ScreeningDto(
         Long id,
         @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm")
         LocalDateTime date,
-        String filmTitle
+        String filmTitle,
+        String roomId
 ) {
 }

@@ -1,4 +1,4 @@
-package com.cinema.screenings.application.dto;
+package com.cinema.screenings.application.queries.dto;
 
 import com.cinema.screenings.domain.Seat;
 import org.mapstruct.Mapper;
