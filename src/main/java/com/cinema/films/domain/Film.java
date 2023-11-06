@@ -21,7 +21,8 @@ public class Film {
 
     private int durationInMinutes;
 
-    protected Film() {}
+    protected Film() {
+    }
 
     public Film(String title, FilmCategory category, int year, int durationInMinutes) {
         this.title = title;

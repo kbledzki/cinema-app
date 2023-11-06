@@ -1,4 +1,4 @@
-package com.cinema.films.application.dto;
+package com.cinema.films.application.queries.dto;
 
 import com.cinema.films.domain.Film;
 import org.mapstruct.Mapper;
