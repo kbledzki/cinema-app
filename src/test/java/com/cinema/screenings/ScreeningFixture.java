@@ -1,13 +1,12 @@
 package com.cinema.screenings;
 
-import com.cinema.films.application.dto.FilmCreateDto;
+import com.cinema.films.application.commands.CreateFilm;
 import com.cinema.films.domain.FilmCategory;
-import com.cinema.rooms.application.dto.RoomCreateDto;
+import com.cinema.rooms.application.commands.CreateRoom;
 import com.cinema.screenings.domain.Screening;
 import com.cinema.screenings.domain.Seat;
 import com.cinema.screenings.domain.SeatStatus;
 
-import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.Year;
 import java.time.temporal.ChronoUnit;
@@ -15,6 +14,7 @@ import java.util.List;
 
 public final class ScreeningFixture {
 
+    public static final Long FILM_ID = 1L;
     public static final String FILM_TITLE = "FILM 1";
     public static final FilmCategory FILM_CATEGORY = FilmCategory.COMEDY;
     public static final int FILM_YEAR = Year.now().getValue();
@@ -34,15 +34,15 @@ public final class ScreeningFixture {
         var seat = new Seat(1,2, SeatStatus.FREE);
         var roomId = "1";
         return new Screening(
-               screeningDate,
-                FILM_TITLE,
+                screeningDate,
+                FILM_ID,
                 roomId,
                 List.of(seat)
         );
     }
 
-    public static FilmCreateDto createFilmCreateDto() {
-        return new FilmCreateDto(
+    public static CreateFilm createCreateFilmCommand() {
+        return new CreateFilm(
                 FILM_TITLE,
                 FILM_CATEGORY,
                 FILM_YEAR,
@@ -50,15 +50,20 @@ public final class ScreeningFixture {
         );
     }
 
-    public static RoomCreateDto createRoomCreateDto() {
-        return new RoomCreateDto(
+    public static CreateFilm createCreateFilmCommand(String filmTitle) {
+        return new CreateFilm(
+                filmTitle,
+                FILM_CATEGORY,
+                FILM_YEAR,
+                FILM_DURATION_IN_MINUTES
+        );
+    }
+
+    public static CreateRoom createCreateRoomCommand() {
+        return new CreateRoom(
                 ROOM_CUSTOM_ID,
                 ROOM_ROWS_NUMBER,
                 ROOM_ROW_SEATS_NUMBER
         );
-    }
-
-    public static LocalDateTime getScreeningDate(Clock clock) {
-        return LocalDateTime.now(clock).plusDays(7);
     }
 }
