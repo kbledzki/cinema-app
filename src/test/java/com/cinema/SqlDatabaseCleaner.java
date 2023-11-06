@@ -13,8 +13,8 @@ import java.sql.SQLException;
 public class SqlDatabaseCleaner {
     private static final String TABLES_NAMES_SQL =
             "SELECT table_name " +
-            "FROM information_schema.tables " +
-            "WHERE table_schema='public'";
+                    "FROM information_schema.tables " +
+                    "WHERE table_schema='public'";
     private static final String TRUNCATE_SQL = "TRUNCATE TABLE ";
     private static final String RESTART_IDENTITY = " RESTART IDENTITY CASCADE";
 
