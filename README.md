@@ -3,7 +3,7 @@ Cinema management application
 
 ## Tech Stack
 
-**Language:** Java 21
+**Language:** Java 17
 
 **Frameworks:** Spring Boot 3, Hibernate, Junit
 
