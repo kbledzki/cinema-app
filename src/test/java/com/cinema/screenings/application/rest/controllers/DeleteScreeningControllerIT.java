@@ -9,6 +9,7 @@ import com.cinema.users.application.commands.handlers.CreateAdminHandler;
 import com.cinema.users.application.commands.handlers.CreateUserHandler;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.web.reactive.server.WebTestClient;
 
 import static com.cinema.screenings.ScreeningFixture.SCREENING_DATE;
 import static com.cinema.screenings.ScreeningFixture.createScreening;
@@ -33,10 +34,10 @@ class DeleteScreeningControllerIT extends SpringIT {
     void screening_is_deleted_only_by_admin() {
         //given
         addCommonUser();
-        var screeningId = 1L;
+        Long screeningId = 1L;
 
         //when
-        var spec = webTestClient
+        WebTestClient.ResponseSpec spec = webTestClient
                 .delete()
                 .uri(SCREENINGS_BASE_ENDPOINT + "/" + screeningId)
                 .headers(headers -> headers.setBasicAuth(USERNAME, PASSWORD))
@@ -50,10 +51,10 @@ class DeleteScreeningControllerIT extends SpringIT {
     void screening_is_deleted() {
         //given
         addAdminUser();
-        var screening = addScreening();
+        Screening screening = addScreening();
 
         //when
-        var spec = webTestClient
+        WebTestClient.ResponseSpec spec = webTestClient
                 .delete()
                 .uri(SCREENINGS_BASE_ENDPOINT + "/" + screening.getId())
                 .headers(headers -> headers.setBasicAuth(USERNAME, PASSWORD))
@@ -65,12 +66,12 @@ class DeleteScreeningControllerIT extends SpringIT {
     }
 
     private Screening addScreening() {
-        var screening = createScreening(SCREENING_DATE);
+        Screening screening = createScreening(SCREENING_DATE);
         return screeningRepository.add(screening);
     }
 
     private void addCommonUser() {
-        var command = new CreateUser(
+        CreateUser command = new CreateUser(
                 USERNAME,
                 PASSWORD
         );
@@ -78,7 +79,7 @@ class DeleteScreeningControllerIT extends SpringIT {
     }
 
     private void addAdminUser() {
-        var command = new CreateAdmin(
+        CreateAdmin command = new CreateAdmin(
                 USERNAME,
                 PASSWORD
         );

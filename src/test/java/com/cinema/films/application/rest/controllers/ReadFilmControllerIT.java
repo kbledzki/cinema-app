@@ -1,10 +1,12 @@
 package com.cinema.films.application.rest.controllers;
 
 import com.cinema.SpringIT;
+import com.cinema.films.domain.Film;
 import com.cinema.films.domain.FilmCategory;
 import com.cinema.films.domain.FilmRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.web.reactive.server.WebTestClient;
 
 import static com.cinema.films.FilmFixture.createFilm;
 import static org.hamcrest.Matchers.equalTo;
@@ -21,10 +23,10 @@ class ReadFilmControllerIT extends SpringIT {
     @Test
     void films_are_read() {
         //given
-        var film = filmRepository.add(createFilm());
+        Film film = filmRepository.add(createFilm());
 
         //when
-        var spec = webTestClient
+        WebTestClient.ResponseSpec spec = webTestClient
                 .get()
                 .uri(FILMS_BASE_ENDPOINT)
                 .exchange();
@@ -44,19 +46,18 @@ class ReadFilmControllerIT extends SpringIT {
     @Test
     void films_are_read_by_title() {
         //given
-        var title = "Film";
-        var otherTitle = "Other Film";
+        String title = "Film";
+        String otherTitle = "Other Film";
         filmRepository.add(createFilm(title));
         filmRepository.add(createFilm(otherTitle));
 
         //when
-        var spec = webTestClient
+        WebTestClient.ResponseSpec spec = webTestClient
                 .get()
                 .uri(uriBuilder -> uriBuilder
                         .path(FILMS_BASE_ENDPOINT)
                         .queryParam("title", title)
-                        .build()
-                )
+                        .build())
                 .exchange();
 
         //then
@@ -68,19 +69,18 @@ class ReadFilmControllerIT extends SpringIT {
     @Test
     void films_are_read_by_category() {
         //given
-        var category = FilmCategory.COMEDY;
-        var otherCategory = FilmCategory.DRAMA;
+        FilmCategory category = FilmCategory.COMEDY;
+        FilmCategory otherCategory = FilmCategory.DRAMA;
         filmRepository.add(createFilm(category));
         filmRepository.add(createFilm(otherCategory));
 
         //when
-        var spec = webTestClient
+        WebTestClient.ResponseSpec spec = webTestClient
                 .get()
                 .uri(uriBuilder -> uriBuilder
                         .path(FILMS_BASE_ENDPOINT)
                         .queryParam("category", category)
-                        .build()
-                )
+                        .build())
                 .exchange();
 
         //then

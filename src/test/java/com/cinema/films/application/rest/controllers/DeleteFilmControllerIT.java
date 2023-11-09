@@ -1,6 +1,7 @@
 package com.cinema.films.application.rest.controllers;
 
 import com.cinema.SpringIT;
+import com.cinema.films.domain.Film;
 import com.cinema.films.domain.FilmRepository;
 import com.cinema.users.application.commands.CreateAdmin;
 import com.cinema.users.application.commands.CreateUser;
@@ -9,6 +10,7 @@ import com.cinema.users.application.commands.handlers.CreateUserHandler;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.web.reactive.server.WebTestClient;
 
 import static com.cinema.films.FilmFixture.createFilm;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -34,7 +36,7 @@ class DeleteFilmControllerIT extends SpringIT {
         addCommonUser();
 
         //when
-        var spec = webTestClient
+        WebTestClient.ResponseSpec spec = webTestClient
                 .delete()
                 .uri(FILMS_BASE_ENDPOINT + "/Film 1")
                 .headers(headers -> headers.setBasicAuth(USERNAME, PASSWORD))
@@ -49,10 +51,10 @@ class DeleteFilmControllerIT extends SpringIT {
     void film_is_deleted() {
         //given
         addAdminUser();
-        var film = filmRepository.add(createFilm());
+        Film film = filmRepository.add(createFilm());
 
         //when
-        var spec = webTestClient
+        WebTestClient.ResponseSpec spec = webTestClient
                 .delete()
                 .uri(FILMS_BASE_ENDPOINT + "/" + film.getId())
                 .headers(headers -> headers.setBasicAuth(USERNAME, PASSWORD))
@@ -64,7 +66,7 @@ class DeleteFilmControllerIT extends SpringIT {
     }
 
     private void addCommonUser() {
-        var command = new CreateUser(
+        CreateUser command = new CreateUser(
                 USERNAME,
                 PASSWORD
         );
@@ -72,7 +74,7 @@ class DeleteFilmControllerIT extends SpringIT {
     }
 
     private void addAdminUser() {
-        var command = new CreateAdmin(
+        CreateAdmin command = new CreateAdmin(
                 USERNAME,
                 PASSWORD
         );

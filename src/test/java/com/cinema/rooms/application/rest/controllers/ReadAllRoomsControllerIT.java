@@ -1,6 +1,7 @@
 package com.cinema.rooms.application.rest.controllers;
 
 import com.cinema.SpringIT;
+import com.cinema.rooms.domain.Room;
 import com.cinema.rooms.domain.RoomRepository;
 import com.cinema.users.application.commands.CreateAdmin;
 import com.cinema.users.application.commands.CreateUser;
@@ -8,6 +9,7 @@ import com.cinema.users.application.commands.handlers.CreateAdminHandler;
 import com.cinema.users.application.commands.handlers.CreateUserHandler;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.web.reactive.server.WebTestClient;
 
 import static com.cinema.rooms.RoomFixture.createRoom;
 
@@ -27,14 +29,14 @@ class ReadAllRoomsControllerIT extends SpringIT {
     @Test
     void rooms_are_read() {
         //given
-        var room = roomRepository.add(createRoom());
-        var adminMail = "admin@mail.com";
-        var adminPassword = "12345";
-        var command = new CreateAdmin(adminMail, adminPassword);
+        Room room = roomRepository.add(createRoom());
+        String adminMail = "admin@mail.com";
+        String adminPassword = "12345";
+        CreateAdmin command = new CreateAdmin(adminMail, adminPassword);
         createAdminHandler.handle(command);
 
         //when
-        var responseSpec = webTestClient
+        WebTestClient.ResponseSpec responseSpec = webTestClient
                 .get()
                 .uri(ROOMS_ENDPOINT)
                 .headers(headers -> headers.setBasicAuth(command.adminMail(), command.adminPassword()))
@@ -53,7 +55,7 @@ class ReadAllRoomsControllerIT extends SpringIT {
     @Test
     void rooms_are_read_only_by_authorized_user() {
         //when
-        var responseSpec = webTestClient
+        WebTestClient.ResponseSpec responseSpec = webTestClient
                 .get()
                 .uri(ROOMS_ENDPOINT)
                 .exchange();
@@ -65,13 +67,13 @@ class ReadAllRoomsControllerIT extends SpringIT {
     @Test
     void rooms_are_read_only_by_admin() {
         //given
-        var userMail = "user1@mail.com";
-        var userPassword = "12345";
-        var command = new CreateUser(userMail, userPassword);
+        String userMail = "user1@mail.com";
+        String userPassword = "12345";
+        CreateUser command = new CreateUser(userMail, userPassword);
         createUserHandler.handle(command);
 
         //when
-        var responseSpec = webTestClient
+        WebTestClient.ResponseSpec responseSpec = webTestClient
                 .get()
                 .uri(ROOMS_ENDPOINT)
                 .headers(headers -> headers.setBasicAuth(command.mail(), command.password()))
