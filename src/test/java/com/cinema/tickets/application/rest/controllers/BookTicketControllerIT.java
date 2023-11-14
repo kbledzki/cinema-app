@@ -5,6 +5,7 @@ import com.cinema.films.application.commands.handlers.CreateFilmHandler;
 import com.cinema.rooms.application.commands.handlers.CreateRoomHandler;
 import com.cinema.screenings.application.commands.handlers.CreateScreeningHandler;
 import com.cinema.tickets.application.commands.BookTicket;
+import com.cinema.tickets.domain.Ticket;
 import com.cinema.tickets.domain.TicketRepository;
 import com.cinema.tickets.domain.TicketStatus;
 import com.cinema.tickets.domain.exceptions.TicketAlreadyExistsException;
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
@@ -69,16 +71,15 @@ class BookTicketControllerIT extends SpringIT {
     @Test
     void ticket_is_made_for_existing_screening() {
         //given
-        var nonExistingScreeningId = 0L;
-        var seatId = 1L;
-        var command = new BookTicket(
+        Long nonExistingScreeningId = 0L;
+        Long seatId = 1L;
+        BookTicket command = new BookTicket(
                 nonExistingScreeningId,
                 seatId
         );
 
-
         //when
-        var spec = webTestClient
+        WebTestClient.ResponseSpec spec = webTestClient
                 .post()
                 .uri(TICKETS_BASE_ENDPOINT)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -94,16 +95,16 @@ class BookTicketControllerIT extends SpringIT {
     void ticket_is_booked_for_existing_seat() {
         //given
         addScreening();
-        var screeningId = 1L;
-        var nonExistingSeatId = 0L;
-        var command = new BookTicket(
+        Long screeningId = 1L;
+        Long nonExistingSeatId = 0L;
+        BookTicket command = new BookTicket(
                 screeningId,
                 nonExistingSeatId
         );
 
 
         //when
-        var spec = webTestClient
+        WebTestClient.ResponseSpec spec = webTestClient
                 .post()
                 .uri(TICKETS_BASE_ENDPOINT)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -118,18 +119,18 @@ class BookTicketControllerIT extends SpringIT {
     @Test
     void ticket_is_booked() {
         //given
-        var filmTitle = "Title 1";
-        var roomId = "1";
+        String filmTitle = "Title 1";
+        String roomId = "1";
         addScreening(filmTitle, roomId);
-        var screeningId = 1L;
-        var seatId = 1L;
-        var command = new BookTicket(
+        Long screeningId = 1L;
+        Long seatId = 1L;
+        BookTicket command = new BookTicket(
                 screeningId,
                 seatId
         );
 
         //when
-        var spec = webTestClient
+        WebTestClient.ResponseSpec spec = webTestClient
                 .post()
                 .uri(TICKETS_BASE_ENDPOINT)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -153,14 +154,14 @@ class BookTicketControllerIT extends SpringIT {
     void ticket_is_unique() {
         //given
         addScreening();
-        var ticket = ticketRepository.add(createTicket());
-        var command = new BookTicket(
+        Ticket ticket = ticketRepository.add(createTicket());
+        BookTicket command = new BookTicket(
                 ticket.getScreeningId(),
                 ticket.getSeatId()
         );
 
         //when
-        var spec = webTestClient
+        WebTestClient.ResponseSpec spec = webTestClient
                 .post()
                 .uri(TICKETS_BASE_ENDPOINT)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -169,7 +170,7 @@ class BookTicketControllerIT extends SpringIT {
                 .exchange();
 
         //then
-        var expectedMessage = new TicketAlreadyExistsException().getMessage();
+        String expectedMessage = new TicketAlreadyExistsException().getMessage();
         spec
                 .expectStatus()
                 .isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY)
@@ -180,20 +181,20 @@ class BookTicketControllerIT extends SpringIT {
     @Test
     void ticket_is_booked_at_least_1h_before_screening() {
         //given
-        var screeningDate = SCREENING_DATE;
+        LocalDateTime screeningDate = SCREENING_DATE;
         addScreening(screeningDate);
         Mockito
                 .when(clock.instant())
                 .thenReturn(screeningDate.minusMinutes(59).toInstant(ZoneOffset.UTC));
-        var screeningId = 1L;
-        var seatId =  1L;
-        var command = new BookTicket(
+        Long screeningId = 1L;
+        Long seatId = 1L;
+        BookTicket command = new BookTicket(
                 screeningId,
                 seatId
         );
 
         //when
-        var spec = webTestClient
+        WebTestClient.ResponseSpec spec = webTestClient
                 .post()
                 .uri(TICKETS_BASE_ENDPOINT)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -202,7 +203,7 @@ class BookTicketControllerIT extends SpringIT {
                 .exchange();
 
         //then
-        var expectedMessage = new TicketBookTooLateException().getMessage();
+        String expectedMessage = new TicketBookTooLateException().getMessage();
         spec
                 .expectStatus()
                 .isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY)

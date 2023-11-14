@@ -6,6 +6,7 @@ import com.cinema.screenings.domain.Screening;
 import com.cinema.screenings.domain.ScreeningRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.time.LocalDate;
 
@@ -29,12 +30,12 @@ class ReadScreeningControllerIT extends SpringIT {
     @Test
     void screenings_are_read() {
         //given
-        var filmTitle = "Sample title";
+        String filmTitle = "Sample title";
         addFilm(filmTitle);
-        var screening = addScreening();
+        Screening screening = addScreening();
 
         //when
-        var spec = webTestClient
+        WebTestClient.ResponseSpec spec = webTestClient
                 .get()
                 .uri(SCREENINGS_BASE_ENDPOINT)
                 .exchange();
@@ -54,12 +55,12 @@ class ReadScreeningControllerIT extends SpringIT {
     void screenings_are_read_by_date() {
         //given
         addFilm();
-        var requiredDate = LocalDate.of(2023, 12, 13);
-        var screeningWithRequiredDate = addScreening(requiredDate);
+        LocalDate requiredDate = LocalDate.of(2023, 12, 13);
+        Screening screeningWithRequiredDate = addScreening(requiredDate);
         addScreening(requiredDate.minusDays(1));
 
         //when
-        var spec = webTestClient
+        WebTestClient.ResponseSpec spec = webTestClient
                 .get()
                 .uri(uriBuilder -> uriBuilder
                         .path(SCREENINGS_BASE_ENDPOINT)

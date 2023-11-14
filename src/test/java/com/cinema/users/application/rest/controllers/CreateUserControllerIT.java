@@ -2,6 +2,8 @@ package com.cinema.users.application.rest.controllers;
 
 import com.cinema.SpringIT;
 import com.cinema.users.UserFixture;
+import com.cinema.users.application.commands.CreateUser;
+import com.cinema.users.domain.User;
 import com.cinema.users.domain.UserRepository;
 import com.cinema.users.domain.UserRole;
 import com.cinema.users.domain.exceptions.UserMailNotUniqueException;
@@ -10,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.web.reactive.server.WebTestClient;
 
 import static com.cinema.users.UserFixture.createCrateUserCommand;
 import static com.cinema.users.UserFixture.createUser;
@@ -32,23 +35,22 @@ class CreateUserControllerIT extends SpringIT {
     @Test
     void user_is_created() {
         //given
-        var dto = UserFixture.createCrateUserCommand();
+        CreateUser crateUserCommand = UserFixture.createCrateUserCommand();
 
         //then
-        var spec = webTestClient
+        WebTestClient.ResponseSpec spec = webTestClient
                 .post()
                 .uri(USERS_BASE_ENDPOINT)
                 .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(dto)
+                .bodyValue(crateUserCommand)
                 .exchange();
 
-
         spec.expectStatus().isOk();
-        assertThat(userRepository.readyByMail(dto.mail()))
+        assertThat(userRepository.readyByMail(crateUserCommand.mail()))
                 .isNotEmpty()
                 .hasValueSatisfying(user -> {
-                    assertEquals(dto.mail(), user.getUsername());
-                    assertTrue(passwordEncoder.matches(dto.password(), user.getPassword()));
+                    assertEquals(crateUserCommand.mail(), user.getUsername());
+                    assertTrue(passwordEncoder.matches(crateUserCommand.password(), user.getPassword()));
                     assertEquals(UserRole.COMMON, user.getRole());
                 });
     }
@@ -56,19 +58,19 @@ class CreateUserControllerIT extends SpringIT {
     @Test
     void user_name_cannot_be_duplicated() {
         //given
-        var user = userRepository.add(createUser("user1@mail.com"));
-        var dto = createCrateUserCommand(user.getUsername());
+        User user = userRepository.add(createUser("user1@mail.com"));
+        CreateUser crateUserCommand = createCrateUserCommand(user.getUsername());
 
         //when
-        var spec = webTestClient
+        WebTestClient.ResponseSpec spec = webTestClient
                 .post()
                 .uri(USERS_BASE_ENDPOINT)
-                .bodyValue(dto)
+                .bodyValue(crateUserCommand)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange();
 
         //then
-        var expectedMessage = new UserMailNotUniqueException().getMessage();
+        String expectedMessage = new UserMailNotUniqueException().getMessage();
         spec
                 .expectStatus().isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY)
                 .expectBody()

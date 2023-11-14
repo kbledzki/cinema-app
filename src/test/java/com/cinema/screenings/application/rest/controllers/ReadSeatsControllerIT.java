@@ -6,6 +6,7 @@ import com.cinema.screenings.domain.Screening;
 import com.cinema.screenings.domain.ScreeningRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.web.reactive.server.WebTestClient;
 
 import static com.cinema.screenings.ScreeningFixture.SCREENING_DATE;
 import static com.cinema.screenings.ScreeningFixture.createCreateRoomCommand;
@@ -27,10 +28,10 @@ class ReadSeatsControllerIT extends SpringIT {
     void seats_are_read_by_screening_id() {
         //given
         addRoom();
-        var screening = addScreening();
+        Screening screening = addScreening();
 
         //when
-        var spec = webTestClient
+        WebTestClient.ResponseSpec spec = webTestClient
                 .get()
                 .uri(SCREENINGS_BASE_ENDPOINT + "/" +  screening.getId() + "/seats")
                 .exchange();
@@ -52,7 +53,7 @@ class ReadSeatsControllerIT extends SpringIT {
     }
 
     private Screening addScreening() {
-        var screening = createScreening(SCREENING_DATE);
+        Screening screening = createScreening(SCREENING_DATE);
         return screeningRepository.add(screening);
     }
 }

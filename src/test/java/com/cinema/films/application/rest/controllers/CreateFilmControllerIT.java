@@ -2,6 +2,7 @@ package com.cinema.films.application.rest.controllers;
 
 import com.cinema.SpringIT;
 import com.cinema.films.application.commands.CreateFilm;
+import com.cinema.films.domain.Film;
 import com.cinema.films.domain.FilmCategory;
 import com.cinema.films.domain.FilmRepository;
 import com.cinema.films.domain.exceptions.FilmTitleNotUniqueException;
@@ -16,6 +17,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.test.web.reactive.server.WebTestClient;
 
 import static com.cinema.films.FilmFixture.createCreateFilmCommand;
 import static com.cinema.films.FilmFixture.createFilm;
@@ -44,7 +46,7 @@ class CreateFilmControllerIT extends SpringIT {
         addCommonUser();
 
         //when
-        var spec = webTestClient
+        WebTestClient.ResponseSpec spec = webTestClient
                 .post()
                 .uri(FILMS_BASE_ENDPOINT)
                 .headers(headers -> headers.setBasicAuth(USERNAME, PASSWORD))
@@ -59,12 +61,12 @@ class CreateFilmControllerIT extends SpringIT {
         //given
         addAdminUser();
 
-        var id = 1L;
-        var title = "Some filmId";
-        var category = FilmCategory.COMEDY;
-        var year = 2023;
-        var durationInMinutes = 100;
-        var command = new CreateFilm(
+        Long id = 1L;
+        String title = "Some filmId";
+        FilmCategory category = FilmCategory.COMEDY;
+        int year = 2023;
+        int durationInMinutes = 100;
+        CreateFilm command = new CreateFilm(
                 title,
                 category,
                 year,
@@ -72,7 +74,7 @@ class CreateFilmControllerIT extends SpringIT {
         );
 
         //when
-        var spec = webTestClient
+        WebTestClient.ResponseSpec spec = webTestClient
                 .post()
                 .uri(FILMS_BASE_ENDPOINT)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -96,11 +98,11 @@ class CreateFilmControllerIT extends SpringIT {
     void film_title_is_unique() {
         //given
         addAdminUser();
-        var film = filmRepository.add(createFilm());
-        var command = createCreateFilmCommand(film.getTitle());
+        Film film = filmRepository.add(createFilm());
+        CreateFilm command = createCreateFilmCommand(film.getTitle());
 
         //when
-        var spec = webTestClient
+        WebTestClient.ResponseSpec spec = webTestClient
                 .post()
                 .uri(FILMS_BASE_ENDPOINT)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -110,7 +112,7 @@ class CreateFilmControllerIT extends SpringIT {
 
         //then
 
-        var expectedMessage = new FilmTitleNotUniqueException().getMessage();
+        String expectedMessage = new FilmTitleNotUniqueException().getMessage();
         spec
                 .expectStatus()
                 .isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY)
@@ -123,10 +125,10 @@ class CreateFilmControllerIT extends SpringIT {
     void film_year_is_previous_current_or_nex_one(Integer wrongYear) {
         //given
         addAdminUser();
-        var command = createCreateFilmCommand(wrongYear);
+        CreateFilm command = createCreateFilmCommand(wrongYear);
 
         //when
-        var spec = webTestClient
+        WebTestClient.ResponseSpec spec = webTestClient
                 .post()
                 .uri(FILMS_BASE_ENDPOINT)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -135,7 +137,7 @@ class CreateFilmControllerIT extends SpringIT {
                 .exchange();
 
         //then
-        var expectedMessage = new FilmYearOutOfRangeException().getMessage();
+        String expectedMessage = new FilmYearOutOfRangeException().getMessage();
         spec
                 .expectStatus()
                 .isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY)
@@ -144,7 +146,7 @@ class CreateFilmControllerIT extends SpringIT {
     }
 
     private void addCommonUser() {
-        var command = new CreateUser(
+        CreateUser command = new CreateUser(
                 USERNAME,
                 PASSWORD
         );
@@ -152,7 +154,7 @@ class CreateFilmControllerIT extends SpringIT {
     }
 
     private void addAdminUser() {
-        var command = new CreateAdmin(
+        CreateAdmin command = new CreateAdmin(
                 USERNAME,
                 PASSWORD
         );

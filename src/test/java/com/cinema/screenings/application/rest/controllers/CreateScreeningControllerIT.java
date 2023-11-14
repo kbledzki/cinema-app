@@ -17,14 +17,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static com.cinema.screenings.ScreeningFixture.SCREENING_DATE;
-import static com.cinema.screenings.ScreeningFixture.createCreateFilmCommand;
-import static com.cinema.screenings.ScreeningFixture.createCreateRoomCommand;
-import static com.cinema.screenings.ScreeningFixture.createScreening;
+import static com.cinema.screenings.ScreeningFixture.*;
 import static org.hamcrest.Matchers.equalTo;
 
 class CreateScreeningControllerIT extends SpringIT {
@@ -54,7 +52,7 @@ class CreateScreeningControllerIT extends SpringIT {
         addCommonUser();
 
         //when
-        var spec = webTestClient
+        WebTestClient.ResponseSpec spec = webTestClient
                 .post()
                 .uri(SCREENINGS_BASE_ENDPOINT)
                 .headers(headers -> headers.setBasicAuth(USERNAME, PASSWORD))
@@ -67,16 +65,16 @@ class CreateScreeningControllerIT extends SpringIT {
     @Test
     void screening_is_created() {
         //given
-        var filmId = 1L;
-        var filmTitle = "Sample title";
-        var roomId = "1";
+        Long filmId = 1L;
+        String filmTitle = "Sample title";
+        String roomId = "1";
         addAdminUser();
         addFilm(filmTitle);
         addRoom();
-        var command = new CreateScreening(SCREENING_DATE, filmId);
+        CreateScreening command = new CreateScreening(SCREENING_DATE, filmId);
 
         //when
-        var spec = webTestClient
+        WebTestClient.ResponseSpec spec = webTestClient
                 .post()
                 .uri(SCREENINGS_BASE_ENDPOINT)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -107,16 +105,16 @@ class CreateScreeningControllerIT extends SpringIT {
     @Test
     void screening_and_current_date_difference_is_min_7_days() {
         //given
-        var filmId = 1L;
-        var filmTitle = "Sample title";
+        Long filmId = 1L;
+        String filmTitle = "Sample title";
         addAdminUser();
         addFilm(filmTitle);
         addRoom();
-        var screeningDate = LocalDateTime.now().plusDays(6);
-        var command = new CreateScreening(screeningDate, filmId);
+        LocalDateTime screeningDate = LocalDateTime.now().plusDays(6);
+        CreateScreening command = new CreateScreening(screeningDate, filmId);
 
         //when
-        var spec = webTestClient
+        WebTestClient.ResponseSpec spec = webTestClient
                 .post()
                 .uri(SCREENINGS_BASE_ENDPOINT)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -125,7 +123,7 @@ class CreateScreeningControllerIT extends SpringIT {
                 .exchange();
 
         //then
-        var expectedMessage = new ScreeningDateOutOfRangeException().getMessage();
+        String expectedMessage = new ScreeningDateOutOfRangeException().getMessage();
         spec
                 .expectStatus()
                 .isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY)
@@ -136,16 +134,16 @@ class CreateScreeningControllerIT extends SpringIT {
     @Test
     void screening_and_current_date_difference_is_max_21_days() {
         //given
-        var filmId = 1L;
-        var filmTitle = "Sample film";
+        Long filmId = 1L;
+        String filmTitle = "Sample film";
         addAdminUser();
         addRoom();
         addFilm(filmTitle);
-        var screeningDate = LocalDateTime.now().plusDays(23);
-        var command = new CreateScreening(screeningDate, filmId);
+        LocalDateTime screeningDate = LocalDateTime.now().plusDays(23);
+        CreateScreening command = new CreateScreening(screeningDate, filmId);
 
         //when
-        var spec = webTestClient
+        WebTestClient.ResponseSpec spec = webTestClient
                 .post()
                 .uri(SCREENINGS_BASE_ENDPOINT)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -154,7 +152,7 @@ class CreateScreeningControllerIT extends SpringIT {
                 .exchange();
 
         //then
-        var expectedMessage = new ScreeningDateOutOfRangeException().getMessage();
+        String expectedMessage = new ScreeningDateOutOfRangeException().getMessage();
         spec
                 .expectStatus()
                 .isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY)
@@ -165,18 +163,18 @@ class CreateScreeningControllerIT extends SpringIT {
     @Test
     void screenings_collision_cannot_exist() {
         //given
-        var filmId = 1L;
-        var filmTitle = "Sample title";
+        Long filmId = 1L;
+        String filmTitle = "Sample title";
         addAdminUser();
         addFilm(filmTitle);
-        var screening = addScreening();
-        var command = new CreateScreening(
+        Screening screening = addScreening();
+        CreateScreening command = new CreateScreening(
                 screening.getDate().plusMinutes(10),
                 filmId
         );
 
         //when
-        var spec = webTestClient
+        WebTestClient.ResponseSpec spec = webTestClient
                 .post()
                 .uri(SCREENINGS_BASE_ENDPOINT)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -185,7 +183,7 @@ class CreateScreeningControllerIT extends SpringIT {
                 .exchange();
 
         //then
-        var expectedMessage = new RoomsNoAvailableException().getMessage();
+        String expectedMessage = new RoomsNoAvailableException().getMessage();
         spec
                 .expectStatus()
                 .isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY)
