@@ -31,8 +31,8 @@ public final class ScreeningFixture {
     }
 
     public static Screening createScreening(LocalDateTime screeningDate) {
-        var seat = new Seat(1,2, SeatStatus.FREE);
-        var roomId = "1";
+        Seat seat = new Seat(1, 2, SeatStatus.FREE);
+        String roomId = "1";
         return new Screening(
                 screeningDate,
                 FILM_ID,

@@ -1,16 +1,21 @@
 package com.cinema.tickets.application.rest.controllers;
 
 import com.cinema.SpringIT;
+import com.cinema.films.application.commands.CreateFilm;
 import com.cinema.films.application.commands.handlers.CreateFilmHandler;
+import com.cinema.rooms.application.commands.CreateRoom;
 import com.cinema.rooms.application.commands.handlers.CreateRoomHandler;
+import com.cinema.screenings.application.commands.CreateScreening;
 import com.cinema.screenings.application.commands.handlers.CreateScreeningHandler;
 import com.cinema.tickets.application.queries.dto.TicketDto;
+import com.cinema.tickets.domain.Ticket;
 import com.cinema.tickets.domain.TicketRepository;
 import com.cinema.users.application.commands.CreateUser;
 import com.cinema.users.application.commands.handlers.CreateUserHandler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.util.List;
 
@@ -55,29 +60,29 @@ class ReadTicketControllerIT extends SpringIT {
     @Test
     void tickets_are_read_by_user_id() {
         //given
-        var createFilmCommand = createCreateFilmCommand();
+        CreateFilm createFilmCommand = createCreateFilmCommand();
         createFilmHandler.handle(createFilmCommand);
 
-        var createRoomCommand = createCreateRoomCommand();
+        CreateRoom createRoomCommand = createCreateRoomCommand();
         createRoomHandler.handle(createRoomCommand);
 
-        var createScreeningCommand = createCreateScreeningCommand();
+        CreateScreening createScreeningCommand = createCreateScreeningCommand();
         createScreeningHandler.handle(createScreeningCommand);
 
-        var ticket = ticketRepository.add(createTicket());
+        Ticket ticket = ticketRepository.add(createTicket());
 
-        var rowNumber = 1;
-        var seatNumber = 1;
+        int rowNumber = 1;
+        int seatNumber = 1;
 
         //when
-        var spec = webTestClient
+        WebTestClient.ResponseSpec spec = webTestClient
                 .get()
                 .uri(TICKETS_BASE_ENDPOINT + "/my")
                 .headers(headers -> headers.setBasicAuth(username, password))
                 .exchange();
 
         //then
-        var expected = List.of(
+        List<TicketDto> expected = List.of(
                 new TicketDto(
                         1L,
                         ticket.getStatus(),

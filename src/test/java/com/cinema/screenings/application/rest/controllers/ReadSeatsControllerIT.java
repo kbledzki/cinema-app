@@ -53,7 +53,7 @@ class ReadSeatsControllerIT extends SpringIT {
     }
 
     private Screening addScreening() {
-        var screening = createScreening(SCREENING_DATE);
+        Screening screening = createScreening(SCREENING_DATE);
         return screeningRepository.add(screening);
     }
 }

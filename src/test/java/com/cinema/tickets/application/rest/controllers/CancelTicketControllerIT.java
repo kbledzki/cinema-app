@@ -3,6 +3,7 @@ package com.cinema.tickets.application.rest.controllers;
 import com.cinema.SpringIT;
 import com.cinema.films.application.commands.handlers.CreateFilmHandler;
 import com.cinema.rooms.application.commands.handlers.CreateRoomHandler;
+import com.cinema.screenings.application.commands.CreateScreening;
 import com.cinema.screenings.application.commands.handlers.CreateScreeningHandler;
 import com.cinema.tickets.domain.TicketRepository;
 import com.cinema.tickets.domain.TicketStatus;
@@ -17,16 +18,12 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.time.Clock;
 import java.time.ZoneOffset;
 
-import static com.cinema.tickets.TicketFixture.SCREENING_DATE;
-import static com.cinema.tickets.TicketFixture.createCancelledTicket;
-import static com.cinema.tickets.TicketFixture.createCreateFilmCommand;
-import static com.cinema.tickets.TicketFixture.createCreateRoomCommand;
-import static com.cinema.tickets.TicketFixture.createCreateScreeningCommand;
-import static com.cinema.tickets.TicketFixture.createTicket;
+import static com.cinema.tickets.TicketFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -72,7 +69,7 @@ class CancelTicketControllerIT extends SpringIT {
         ticketRepository.add(createTicket());
 
         //when
-        var spec = webTestClient
+        WebTestClient.ResponseSpec spec = webTestClient
                 .patch()
                 .uri(TICKETS_BASE_ENDPOINT + "/" + 1L + "/cancel")
                 .headers(headers -> headers.setBasicAuth(username, password))
@@ -94,14 +91,14 @@ class CancelTicketControllerIT extends SpringIT {
         ticketRepository.add(createCancelledTicket());
 
         //when
-        var spec = webTestClient
+        WebTestClient.ResponseSpec spec = webTestClient
                 .patch()
                 .uri(TICKETS_BASE_ENDPOINT + "/" + 1L + "/cancel")
                 .headers(headers -> headers.setBasicAuth(username, password))
                 .exchange();
 
         //then
-        var expectedMessage = new TicketAlreadyCancelledException().getMessage();
+        String expectedMessage = new TicketAlreadyCancelledException().getMessage();
         spec
                 .expectStatus()
                 .isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY)
@@ -114,7 +111,7 @@ class CancelTicketControllerIT extends SpringIT {
         //given
         createFilmHandler.handle(createCreateFilmCommand());
         createRoomHandler.handle(createCreateRoomCommand());
-        var command = createCreateScreeningCommand();
+        CreateScreening command = createCreateScreeningCommand();
         createScreeningHandler.handle(command);
 
         ticketRepository.add(createTicket());
@@ -123,14 +120,14 @@ class CancelTicketControllerIT extends SpringIT {
                 .thenReturn(command.date().minusHours(23).toInstant(ZoneOffset.UTC));
 
         //when
-        var spec = webTestClient
+        WebTestClient.ResponseSpec spec = webTestClient
                 .patch()
                 .uri(TICKETS_BASE_ENDPOINT + "/" + 1L + "/cancel")
                 .headers(headers -> headers.setBasicAuth(username, password))
                 .exchange();
 
         //then
-        var expectedMessage = new TicketCancelTooLateException().getMessage();
+        String expectedMessage = new TicketCancelTooLateException().getMessage();
         spec
                 .expectStatus()
                 .isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY)
@@ -141,18 +138,18 @@ class CancelTicketControllerIT extends SpringIT {
     @Test
     void ticket_is_cancelled_if_belongs_to_current_user() {
         //given
-        var notCurrentUserId = 2L;
+        Long notCurrentUserId = 2L;
         ticketRepository.add(createTicket(notCurrentUserId));
 
         //when
-        var spec = webTestClient
+        WebTestClient.ResponseSpec spec = webTestClient
                 .patch()
                 .uri(TICKETS_BASE_ENDPOINT + "/" + 1L + "/cancel")
                 .headers(headers -> headers.setBasicAuth(username, password))
                 .exchange();
 
         //then
-        var expectedMessage = new TicketNotBelongsToUserException().getMessage();
+        String expectedMessage = new TicketNotBelongsToUserException().getMessage();
         spec
                 .expectStatus()
                 .isEqualTo(HttpStatus.FORBIDDEN)
