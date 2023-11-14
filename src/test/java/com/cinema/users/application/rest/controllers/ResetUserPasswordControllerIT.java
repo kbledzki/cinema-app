@@ -1,9 +1,13 @@
 package com.cinema.users.application.rest.controllers;
 
 import com.cinema.SpringIT;
+import com.cinema.users.domain.User;
 import com.cinema.users.domain.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.web.reactive.server.WebTestClient;
+
+import java.util.UUID;
 
 import static com.cinema.users.UserFixture.createUser;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -18,10 +22,10 @@ class ResetUserPasswordControllerIT extends SpringIT {
     @Test
     void user_password_is_reset() {
         //given
-        var user = userRepository.add(createUser());
+        User user = userRepository.add(createUser());
 
         //when
-        var spec = webTestClient
+        WebTestClient.ResponseSpec spec = webTestClient
                 .patch()
                 .uri(uriBuilder -> uriBuilder
                         .path(USERS_BASE_ENDPOINT + "/password/reset")
@@ -33,7 +37,7 @@ class ResetUserPasswordControllerIT extends SpringIT {
 
         //then
         spec.expectStatus().isOk();
-        var userPasswordResetToken = userRepository
+        UUID userPasswordResetToken = userRepository
                 .readyByMail(user.getUsername())
                 .orElseThrow()
                 .getPasswordResetToken();

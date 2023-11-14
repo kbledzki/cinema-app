@@ -7,6 +7,7 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 @RequiredArgsConstructor
 @Component
@@ -22,8 +23,8 @@ public class SqlDatabaseCleaner {
 
     public void clean() {
         try (
-                var connection = dataSource.getConnection();
-                var resultSet = connection
+                Connection connection = dataSource.getConnection();
+                ResultSet resultSet = connection
                         .createStatement()
                         .executeQuery(TABLES_NAMES_SQL)
         ) {
@@ -35,8 +36,8 @@ public class SqlDatabaseCleaner {
 
     private void resetTables(Connection connection, ResultSet resultSet) throws SQLException {
         while (resultSet.next()) {
-            var tableName = resultSet.getString("table_name");
-            try (var statement = connection.createStatement()) {
+            String tableName = resultSet.getString("table_name");
+            try (Statement statement = connection.createStatement()) {
                 statement.executeUpdate(TRUNCATE_SQL + tableName + RESTART_IDENTITY);
             }
         }

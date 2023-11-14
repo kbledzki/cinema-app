@@ -2,11 +2,13 @@ package com.cinema.users.application.rest.controllers;
 
 import com.cinema.SpringIT;
 import com.cinema.users.application.commands.SetNewUserPassword;
+import com.cinema.users.domain.User;
 import com.cinema.users.domain.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.util.UUID;
 
@@ -27,15 +29,15 @@ class SetNewUserPasswordControllerIT extends SpringIT {
     @Test
     void user_new_password_is_set() {
         //given
-        var passwordResetToken = UUID.randomUUID();
-        var addedUser = userRepository.add(createUser(passwordResetToken));
-        var command = new SetNewUserPassword(
+        UUID passwordResetToken = UUID.randomUUID();
+        User addedUser = userRepository.add(createUser(passwordResetToken));
+        SetNewUserPassword command = new SetNewUserPassword(
                 passwordResetToken,
                 addedUser.getPassword() + "new"
         );
 
         //when
-        var spec = webTestClient
+        WebTestClient.ResponseSpec spec = webTestClient
                 .patch()
                 .uri(USERS_BASE_ENDPOINT + "/password/new")
                 .bodyValue(command)
