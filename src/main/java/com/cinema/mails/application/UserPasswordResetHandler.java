@@ -20,9 +20,9 @@ class UserPasswordResetHandler {
 
     @EventListener
     void handle(UserPasswordResetEvent event) {
-        var subject = "Password reset";
-        var message = "Your password reset token: " + event.token();
-        var passwordResetMail = new Mail(
+        String subject = "Password reset";
+        String message = "Your password reset token: " + event.token();
+        Mail passwordResetMail = new Mail(
                 event.mail(),
                 subject,
                 message,
