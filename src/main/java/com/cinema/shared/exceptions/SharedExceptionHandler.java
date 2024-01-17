@@ -15,7 +15,7 @@ class SharedExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     ResponseEntity<Map<String, String>> handle(MethodArgumentNotValidException exception) {
-        var errors = exception
+        Map<String, String> errors = exception
                 .getBindingResult()
                 .getFieldErrors()
                 .stream()

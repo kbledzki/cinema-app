@@ -4,8 +4,6 @@ import com.cinema.films.application.commands.CreateFilm;
 import com.cinema.films.domain.FilmCategory;
 import com.cinema.rooms.application.commands.CreateRoom;
 import com.cinema.screenings.domain.Screening;
-import com.cinema.screenings.domain.Seat;
-import com.cinema.screenings.domain.SeatStatus;
 
 import java.time.LocalDateTime;
 import java.time.Year;
