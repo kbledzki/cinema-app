@@ -6,7 +6,6 @@ import com.cinema.films.domain.Film;
 import com.cinema.films.domain.FilmCategory;
 import com.cinema.films.domain.FilmRepository;
 import com.cinema.films.domain.exceptions.FilmTitleNotUniqueException;
-import com.cinema.films.domain.exceptions.FilmYearOutOfRangeException;
 import com.cinema.users.application.commands.CreateAdmin;
 import com.cinema.users.application.commands.CreateUser;
 import com.cinema.users.application.commands.handlers.CreateAdminHandler;

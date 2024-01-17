@@ -1,9 +1,9 @@
-package com.cinema.films.application.commands;
+package com.cinema.films.application.dto;
 
 import com.cinema.films.domain.FilmCategory;
 import jakarta.validation.constraints.NotNull;
 
-public record CreateFilm(
+public record CreateFilmDto(
         @NotNull
         String title,
         @NotNull
@@ -14,3 +14,4 @@ public record CreateFilm(
         Integer durationInMinutes
 ) {
 }
+

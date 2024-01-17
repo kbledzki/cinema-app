@@ -1,6 +1,6 @@
 package com.cinema.films.domain;
 
-import com.cinema.films.application.queries.ReadFilms;
+import com.cinema.films.application.dto.GetFilmsDto;
 
 import java.util.List;
 import java.util.Optional;
@@ -10,9 +10,9 @@ public interface FilmRepository {
 
     void delete(Film film);
 
-    Optional<Film> readById(Long id);
+    Optional<Film> getById(Long id);
 
-    List<Film> readAll(ReadFilms query);
+    List<Film> getAll(GetFilmsDto dto);
 
     boolean existsByTitle(String title);
 }

@@ -1,5 +1,4 @@
-package com.cinema.films.application.queries.dto;
-
+package com.cinema.films.application.dto;
 
 import com.cinema.films.domain.FilmCategory;
 

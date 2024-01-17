@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 
 @Entity
-@Table(name = "films")
 @Getter
 public class Film {
 
