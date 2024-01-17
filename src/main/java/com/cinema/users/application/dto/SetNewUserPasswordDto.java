@@ -1,4 +1,4 @@
-package com.cinema.users.application.commands;
+package com.cinema.users.application.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Size;
 
 import java.util.UUID;
 
-public record SetNewUserPassword(
+public record SetNewUserPasswordDto(
         @NotNull
         UUID passwordResetToken,
 

@@ -6,7 +6,7 @@ import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -15,6 +15,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
@@ -28,46 +29,16 @@ import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 )
 class SecurityConfig {
 
+
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .authorizeHttpRequests(
                         configurer -> configurer
-                                .requestMatchers(
-                                        HttpMethod.GET,
-                                        "/films/**",
-                                        "/screenings/**",
-                                        "/seats/**"
-                                ).permitAll()
-                                .requestMatchers(
-                                        HttpMethod.POST,
-                                        "/users"
-                                ).permitAll()
-                                .requestMatchers(
-                                        HttpMethod.PATCH,
-                                        "/users/password/reset",
-                                        "/users/password/new"
-                                ).permitAll()
-                                .requestMatchers(
-                                        "/swagger-ui/**",
-                                        "/v3/api-docs/**"
-                                ).permitAll()
-                                .requestMatchers(
-                                        HttpMethod.GET,
-                                        "/rooms"
-                                ).hasAuthority("ADMIN")
-                                .requestMatchers(
-                                        HttpMethod.POST,
-                                        "/films",
-                                        "/screenings"
-                                ).hasAuthority("ADMIN")
-                                .requestMatchers(
-                                        HttpMethod.DELETE,
-                                        "/films/{title}",
-                                        "/screenings/{id}"
-                                ).hasAuthority("ADMIN")
-                                .anyRequest()
-                                .authenticated()
+                                .requestMatchers("/admin/**").hasAuthority("ADMIN")
+                                .requestMatchers("/public/**").permitAll()
+                                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                                .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(configurer -> configurer
@@ -83,14 +54,22 @@ class SecurityConfig {
     }
 
     @Bean
-    PasswordEncoder passwordEncoder() {
+    @Profile("prod")
+    PasswordEncoder prodPasswordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    @Profile("test")
+    @SuppressWarnings("deprecation")
+    PasswordEncoder testPasswordEncoder() {
+        return NoOpPasswordEncoder.getInstance();
     }
 
     @Bean
     UserDetailsService userDetailsService(UserRepository userRepository) {
         return username -> userRepository
-                .readyByMail(username)
+                .getByMail(username)
                 .orElseThrow(() -> new UsernameNotFoundException(username));
     }
 }
