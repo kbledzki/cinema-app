@@ -5,7 +5,11 @@ import java.util.Optional;
 
 public interface TicketRepository {
     Ticket add(Ticket ticket);
-    Optional<Ticket> readById(Long ticketId);
-    List<Ticket> readAllByUserId(Long userId);
-    boolean exists(Long screeningId, Long seatId);
+
+    Optional<Ticket> getByIdAndUserId(Long ticketId, Long userId);
+
+    List<Ticket> getAllByUserId(Long userId);
+
+    List<Ticket> getAll();
 }
+

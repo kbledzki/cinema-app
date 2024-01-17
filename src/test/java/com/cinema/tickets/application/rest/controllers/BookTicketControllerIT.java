@@ -7,7 +7,6 @@ import com.cinema.screenings.application.commands.handlers.CreateScreeningHandle
 import com.cinema.tickets.application.commands.BookTicket;
 import com.cinema.tickets.domain.Ticket;
 import com.cinema.tickets.domain.TicketRepository;
-import com.cinema.tickets.domain.TicketStatus;
 import com.cinema.tickets.domain.exceptions.TicketAlreadyExistsException;
 import com.cinema.tickets.domain.exceptions.TicketBookTooLateException;
 import com.cinema.users.application.commands.CreateUser;

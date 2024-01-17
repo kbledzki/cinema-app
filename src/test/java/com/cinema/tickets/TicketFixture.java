@@ -5,7 +5,6 @@ import com.cinema.screenings.application.commands.CreateScreening;
 import com.cinema.films.domain.FilmCategory;
 import com.cinema.rooms.application.commands.CreateRoom;
 import com.cinema.tickets.domain.Ticket;
-import com.cinema.tickets.domain.TicketStatus;
 
 import java.time.LocalDateTime;
 import java.time.Year;

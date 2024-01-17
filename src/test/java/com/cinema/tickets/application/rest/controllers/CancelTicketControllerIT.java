@@ -6,7 +6,6 @@ import com.cinema.rooms.application.commands.handlers.CreateRoomHandler;
 import com.cinema.screenings.application.commands.CreateScreening;
 import com.cinema.screenings.application.commands.handlers.CreateScreeningHandler;
 import com.cinema.tickets.domain.TicketRepository;
-import com.cinema.tickets.domain.TicketStatus;
 import com.cinema.tickets.domain.exceptions.TicketAlreadyCancelledException;
 import com.cinema.tickets.domain.exceptions.TicketCancelTooLateException;
 import com.cinema.tickets.domain.exceptions.TicketNotBelongsToUserException;
