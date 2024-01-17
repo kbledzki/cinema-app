@@ -1,6 +1,6 @@
 package com.cinema.screenings.application.rest.controllers;
 
-import com.cinema.SpringIT;
+import com.cinema.BaseIT;
 import com.cinema.screenings.domain.Screening;
 import com.cinema.screenings.domain.ScreeningRepository;
 import com.cinema.users.application.commands.CreateAdmin;
@@ -15,7 +15,7 @@ import static com.cinema.screenings.ScreeningFixture.SCREENING_DATE;
 import static com.cinema.screenings.ScreeningFixture.createScreening;
 import static org.assertj.core.api.Assertions.assertThat;
 
-class DeleteScreeningControllerIT extends SpringIT {
+class DeleteScreeningControllerIT extends BaseIT {
 
     private static final String SCREENINGS_BASE_ENDPOINT = "/screenings";
     private static final String USERNAME = "user";

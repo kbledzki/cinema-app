@@ -1,6 +1,6 @@
 package com.cinema.screenings.application.rest.controllers;
 
-import com.cinema.SpringIT;
+import com.cinema.BaseIT;
 import com.cinema.films.application.commands.handlers.CreateFilmHandler;
 import com.cinema.screenings.domain.Screening;
 import com.cinema.screenings.domain.ScreeningRepository;
@@ -17,7 +17,7 @@ import static org.hamcrest.Matchers.everyItem;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.notNullValue;
 
-class ReadScreeningControllerIT extends SpringIT {
+class ReadScreeningControllerIT extends BaseIT {
 
     private static final String SCREENINGS_BASE_ENDPOINT = "/screenings";
 

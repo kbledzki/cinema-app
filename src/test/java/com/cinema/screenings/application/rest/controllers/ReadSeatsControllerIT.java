@@ -1,6 +1,6 @@
 package com.cinema.screenings.application.rest.controllers;
 
-import com.cinema.SpringIT;
+import com.cinema.BaseIT;
 import com.cinema.rooms.application.commands.handlers.CreateRoomHandler;
 import com.cinema.screenings.domain.Screening;
 import com.cinema.screenings.domain.ScreeningRepository;
@@ -14,7 +14,7 @@ import static com.cinema.screenings.ScreeningFixture.createScreening;
 import static org.hamcrest.Matchers.everyItem;
 import static org.hamcrest.Matchers.notNullValue;
 
-class ReadSeatsControllerIT extends SpringIT {
+class ReadSeatsControllerIT extends BaseIT {
 
     private static final String SCREENINGS_BASE_ENDPOINT = "/screenings";
 

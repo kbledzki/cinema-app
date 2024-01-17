@@ -1,6 +1,6 @@
 package com.cinema.tickets.application.rest.controllers;
 
-import com.cinema.SpringIT;
+import com.cinema.BaseIT;
 import com.cinema.films.application.commands.CreateFilm;
 import com.cinema.films.application.commands.handlers.CreateFilmHandler;
 import com.cinema.rooms.application.commands.CreateRoom;
@@ -26,7 +26,7 @@ import static com.cinema.tickets.TicketFixture.createTicket;
 import static org.hamcrest.Matchers.everyItem;
 import static org.hamcrest.Matchers.notNullValue;
 
-class ReadTicketControllerIT extends SpringIT {
+class ReadTicketControllerIT extends BaseIT {
 
     private static final String TICKETS_BASE_ENDPOINT = "/tickets";
     private static final String username = "user1@mail.com";

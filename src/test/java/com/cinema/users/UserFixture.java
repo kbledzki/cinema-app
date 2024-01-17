@@ -1,8 +1,9 @@
 package com.cinema.users;
 
-import com.cinema.users.application.commands.CreateUser;
+import com.cinema.users.application.dto.CreateUserDto;
 import com.cinema.users.domain.User;
 import com.cinema.users.domain.UserRole;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.UUID;
 
@@ -15,15 +16,15 @@ public final class UserFixture {
     private UserFixture() {
     }
 
-    public static CreateUser createCrateUserCommand() {
-        return new CreateUser(
+    public static CreateUserDto createCrateUserDto() {
+        return new CreateUserDto(
                 MAIL,
                 PASSWORD
         );
     }
 
-    public static CreateUser createCrateUserCommand(String mail) {
-        return new CreateUser(
+    public static CreateUserDto createCrateUserDto(String mail) {
+        return new CreateUserDto(
                 mail,
                 PASSWORD
         );
@@ -33,12 +34,24 @@ public final class UserFixture {
         return new User(MAIL, PASSWORD, UserRole.COMMON);
     }
 
+    public static User createUser(UserRole role) {
+        return new User(MAIL, PASSWORD, role);
+    }
+
+    public static User createUser(PasswordEncoder passwordEncoder) {
+        return new User(MAIL, passwordEncoder.encode(PASSWORD), UserRole.COMMON);
+    }
+
     public static User createUser(String mail) {
         return new User(mail, PASSWORD, UserRole.COMMON);
     }
 
+    public static User createUser(String mail, String password) {
+        return new User(mail, password, UserRole.COMMON);
+    }
+
     public static User createUser(UUID passwordResetToken) {
-        var user = new User(MAIL, PASSWORD, UserRole.COMMON);
+        User user = new User(MAIL, PASSWORD, UserRole.COMMON);
         user.setPasswordResetToken(passwordResetToken);
         return user;
     }

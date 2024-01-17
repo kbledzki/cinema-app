@@ -1,6 +1,6 @@
 package com.cinema.films.application.rest.controllers;
 
-import com.cinema.SpringIT;
+import com.cinema.BaseIT;
 import com.cinema.films.domain.Film;
 import com.cinema.films.domain.FilmCategory;
 import com.cinema.films.domain.FilmRepository;
@@ -13,7 +13,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.everyItem;
 import static org.hamcrest.Matchers.hasSize;
 
-class ReadFilmControllerIT extends SpringIT {
+class ReadFilmControllerIT extends BaseIT {
 
     private static final String FILMS_BASE_ENDPOINT = "/films";
 

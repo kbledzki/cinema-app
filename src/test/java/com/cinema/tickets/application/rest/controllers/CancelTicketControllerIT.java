@@ -1,6 +1,6 @@
 package com.cinema.tickets.application.rest.controllers;
 
-import com.cinema.SpringIT;
+import com.cinema.BaseIT;
 import com.cinema.films.application.commands.handlers.CreateFilmHandler;
 import com.cinema.rooms.application.commands.handlers.CreateRoomHandler;
 import com.cinema.screenings.application.commands.CreateScreening;
@@ -28,7 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class CancelTicketControllerIT extends SpringIT {
+class CancelTicketControllerIT extends BaseIT {
 
     private static final String TICKETS_BASE_ENDPOINT = "/tickets";
     private static final String username = "user1@mail.com";

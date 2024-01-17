@@ -1,6 +1,6 @@
 package com.cinema.rooms.application.rest.controllers;
 
-import com.cinema.SpringIT;
+import com.cinema.BaseIT;
 import com.cinema.rooms.domain.Room;
 import com.cinema.rooms.domain.RoomRepository;
 import com.cinema.users.application.commands.CreateAdmin;
@@ -13,7 +13,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 
 import static com.cinema.rooms.RoomFixture.createRoom;
 
-class ReadAllRoomsControllerIT extends SpringIT {
+class ReadAllRoomsControllerIT extends BaseIT {
 
     private static final String ROOMS_ENDPOINT = "/rooms";
 

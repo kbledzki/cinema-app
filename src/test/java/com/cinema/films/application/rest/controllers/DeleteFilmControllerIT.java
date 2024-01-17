@@ -1,6 +1,6 @@
 package com.cinema.films.application.rest.controllers;
 
-import com.cinema.SpringIT;
+import com.cinema.BaseIT;
 import com.cinema.films.domain.Film;
 import com.cinema.films.domain.FilmRepository;
 import com.cinema.users.application.commands.CreateAdmin;
@@ -15,7 +15,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import static com.cinema.films.FilmFixture.createFilm;
 import static org.assertj.core.api.Assertions.assertThat;
 
-class DeleteFilmControllerIT extends SpringIT {
+class DeleteFilmControllerIT extends BaseIT {
 
     private static final String FILMS_BASE_ENDPOINT = "/films";
     private static final String USERNAME = "user";

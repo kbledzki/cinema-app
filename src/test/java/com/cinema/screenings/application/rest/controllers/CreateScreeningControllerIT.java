@@ -1,6 +1,6 @@
 package com.cinema.screenings.application.rest.controllers;
 
-import com.cinema.SpringIT;
+import com.cinema.BaseIT;
 import com.cinema.films.application.commands.handlers.CreateFilmHandler;
 import com.cinema.rooms.application.commands.handlers.CreateRoomHandler;
 import com.cinema.rooms.domain.exceptions.RoomsNoAvailableException;
@@ -25,7 +25,7 @@ import java.util.List;
 import static com.cinema.screenings.ScreeningFixture.*;
 import static org.hamcrest.Matchers.equalTo;
 
-class CreateScreeningControllerIT extends SpringIT {
+class CreateScreeningControllerIT extends BaseIT {
 
     private static final String SCREENINGS_BASE_ENDPOINT = "/screenings";
     private static final String USERNAME = "user";

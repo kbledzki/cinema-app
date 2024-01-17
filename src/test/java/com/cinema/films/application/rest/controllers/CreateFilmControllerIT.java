@@ -1,6 +1,6 @@
 package com.cinema.films.application.rest.controllers;
 
-import com.cinema.SpringIT;
+import com.cinema.BaseIT;
 import com.cinema.films.application.commands.CreateFilm;
 import com.cinema.films.domain.Film;
 import com.cinema.films.domain.FilmCategory;
@@ -25,7 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class CreateFilmControllerIT extends SpringIT {
+class CreateFilmControllerIT extends BaseIT {
 
     private static final String FILMS_BASE_ENDPOINT = "/films";
     private static final String USERNAME = "user";
