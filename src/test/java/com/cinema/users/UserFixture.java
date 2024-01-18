@@ -11,7 +11,7 @@ public final class UserFixture {
 
     private static final String MAIL = "user1@mail.com";
 
-    private static final String PASSWORD = "password1";
+    public static final String PASSWORD = "password1";
 
     private UserFixture() {
     }
@@ -51,7 +51,7 @@ public final class UserFixture {
     }
 
     public static User createUser(UUID passwordResetToken) {
-        User user = new User(MAIL, PASSWORD, UserRole.COMMON);
+        var user = new User(MAIL, PASSWORD, UserRole.COMMON);
         user.setPasswordResetToken(passwordResetToken);
         return user;
     }

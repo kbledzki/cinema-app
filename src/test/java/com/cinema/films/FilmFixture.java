@@ -1,11 +1,10 @@
 package com.cinema.films;
 
-import com.cinema.films.application.commands.CreateFilm;
+import com.cinema.films.application.dto.CreateFilmDto;
 import com.cinema.films.domain.Film;
 import com.cinema.films.domain.FilmCategory;
 
 import java.time.Year;
-import java.util.List;
 
 public final class FilmFixture {
 
@@ -20,29 +19,11 @@ public final class FilmFixture {
     private FilmFixture() {
     }
 
-    public static CreateFilm createCreateFilmCommand() {
-        return new CreateFilm(
-                TITLE,
-                CATEGORY,
-                YEAR,
-                DURATION_IN_MINUTES
-        );
-    }
-
-    public static CreateFilm createCreateFilmCommand(String title) {
-        return new CreateFilm(
+    public static CreateFilmDto createCreateFilmDto(String title) {
+        return new CreateFilmDto(
                 title,
                 CATEGORY,
                 YEAR,
-                DURATION_IN_MINUTES
-        );
-    }
-
-    public static CreateFilm createCreateFilmCommand(Integer year) {
-        return new CreateFilm(
-                TITLE,
-                CATEGORY,
-                year,
                 DURATION_IN_MINUTES
         );
     }
@@ -71,13 +52,6 @@ public final class FilmFixture {
                 CATEGORY,
                 YEAR,
                 DURATION_IN_MINUTES
-        );
-    }
-
-    public static List<Integer> getWrongFilmYears() {
-        return List.of(
-                YEAR - 2,
-                YEAR + 2
         );
     }
 }

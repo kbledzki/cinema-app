@@ -1,67 +1,87 @@
 package com.cinema.screenings;
 
-import com.cinema.films.application.commands.CreateFilm;
-import com.cinema.films.domain.FilmCategory;
-import com.cinema.rooms.application.commands.CreateRoom;
+import com.cinema.films.domain.Film;
+import com.cinema.halls.domain.Hall;
+import com.cinema.halls.domain.exceptions.HallNotFoundException;
 import com.cinema.screenings.domain.Screening;
+import com.cinema.screenings.domain.ScreeningSeat;
 
 import java.time.LocalDateTime;
-import java.time.Year;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 public final class ScreeningFixture {
-
-    public static final Long FILM_ID = 1L;
-    public static final String FILM_TITLE = "FILM 1";
-    public static final FilmCategory FILM_CATEGORY = FilmCategory.COMEDY;
-    public static final int FILM_YEAR = Year.now().getValue();
-    public static final int FILM_DURATION_IN_MINUTES = 100;
-    public static final String ROOM_CUSTOM_ID = "1";
-    public static final int ROOM_ROWS_NUMBER = 10;
-    public static final int ROOM_ROW_SEATS_NUMBER = 15;
     public static final LocalDateTime SCREENING_DATE = LocalDateTime
             .now()
             .plusDays(8)
             .truncatedTo(ChronoUnit.MINUTES);
+    public static final LocalDateTime SCREENING_END_DATE = SCREENING_DATE.plusMinutes(100);
 
     private ScreeningFixture() {
     }
 
-    public static Screening createScreening(LocalDateTime screeningDate) {
-        Seat seat = new Seat(1, 2, SeatStatus.FREE);
-        String roomId = "1";
+    public static Screening createScreening(Film film, Hall hall) {
+        return new Screening(
+                SCREENING_DATE,
+                SCREENING_END_DATE,
+                film,
+                hall
+        );
+    }
+
+    public static Screening createScreening(LocalDateTime screeningDate, Film film, Hall hall) {
         return new Screening(
                 screeningDate,
-                FILM_ID,
-                roomId,
-                List.of(seat)
+                SCREENING_END_DATE,
+                film,
+                hall
         );
     }
 
-    public static CreateFilm createCreateFilmCommand() {
-        return new CreateFilm(
-                FILM_TITLE,
-                FILM_CATEGORY,
-                FILM_YEAR,
-                FILM_DURATION_IN_MINUTES
+    public static Screening createScreeningWithSeats(Hall hall, Film film) {
+        Screening screening = new Screening(
+                SCREENING_DATE,
+                SCREENING_END_DATE,
+                film,
+                hall
         );
+        List<ScreeningSeat> seats = List.of(
+                new ScreeningSeat(true, hall.getSeats().get(0), screening),
+                new ScreeningSeat(true, hall.getSeats().get(1), screening)
+        );
+        screening.assignSeats(seats);
+        return screening;
     }
 
-    public static CreateFilm createCreateFilmCommand(String filmTitle) {
-        return new CreateFilm(
-                filmTitle,
-                FILM_CATEGORY,
-                FILM_YEAR,
-                FILM_DURATION_IN_MINUTES
+    public static Screening createScreeningWithSeats(LocalDateTime date, Film film, Hall hall) {
+        Screening screening = new Screening(
+                date,
+                SCREENING_END_DATE,
+                film,
+                hall
         );
+        List<ScreeningSeat> seats = List.of(
+                new ScreeningSeat(true, hall.getSeats().get(0), screening),
+                new ScreeningSeat(true, hall.getSeats().get(1), screening)
+        );
+        screening.assignSeats(seats);
+        return screening;
     }
 
-    public static CreateRoom createCreateRoomCommand() {
-        return new CreateRoom(
-                ROOM_CUSTOM_ID,
-                ROOM_ROWS_NUMBER,
-                ROOM_ROW_SEATS_NUMBER
+    public static Screening createScreeningWithNotFreeSeat(Hall hall, Film film) {
+        Screening screening = new Screening(
+                SCREENING_DATE,
+                SCREENING_END_DATE,
+                film,
+                hall
         );
+        List<ScreeningSeat> seats = List.of(
+                new ScreeningSeat(false, hall.getSeats()
+                        .stream()
+                        .findFirst()
+                        .orElseThrow(HallNotFoundException::new), screening)
+        );
+        screening.assignSeats(seats);
+        return screening;
     }
 }

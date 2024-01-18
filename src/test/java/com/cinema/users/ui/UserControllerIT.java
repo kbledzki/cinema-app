@@ -48,7 +48,6 @@ class UserControllerIT extends BaseIT {
                 .bodyValue(crateUserDto)
                 .exchange();
 
-
         spec.expectStatus().isOk();
         assertThat(userRepository.getByMail(crateUserDto.mail()))
                 .isNotEmpty()
@@ -109,15 +108,15 @@ class UserControllerIT extends BaseIT {
     @Test
     void user_new_password_is_set() {
         //given
-        UUID passwordResetToken = UUID.randomUUID();
-        User addedUser = userRepository.add(createUser(passwordResetToken));
-        SetNewUserPasswordDto setNewUserPasswordDto = new SetNewUserPasswordDto(
+        var passwordResetToken = UUID.randomUUID();
+        var addedUser = userRepository.add(createUser(passwordResetToken));
+        var setNewUserPasswordDto = new SetNewUserPasswordDto(
                 passwordResetToken,
                 addedUser.getPassword() + "new"
         );
 
         //when
-        WebTestClient.ResponseSpec spec = webTestClient
+        var spec = webTestClient
                 .patch()
                 .uri(USERS_BASE_ENDPOINT + "/password/new")
                 .bodyValue(setNewUserPasswordDto)
